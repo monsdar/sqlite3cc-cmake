@@ -1,0 +1,62 @@
+
+IMMEDIATE ISSUES
+
+ - look in to making query and command's _handle a shared_ptr, so that query
+   and command classes can be copied.
+
+ - rename _bind_index and _column_index to _next_*
+
+ - change the transaction_guard interface so you can dereference it to get to
+   its transaction and the transactions take care of not rolling back or
+   committing when they already have done (as well as resetting in-progress
+   queries).
+
+ - turn on extended errcodes in open() and handle them in sqlite_error
+
+ - query::prepare() isn't being called during construction (from
+   basic_statement's constructor)
+
+ - add columns() to row that returns a boost::tuple of various types so multple
+   columns can be fetched at once (look in to using BOOST_PP_ITERATE macro)
+
+ - add a row::column() that can take a column name. This is nexessary when
+   doing a "SELECT *" and you don't know the column indicies. To implement
+   this, the first time it is called, a column-name-to-index lookup would have
+   to be built. This should be done in the query, not the row. This means that
+   the row will have to know it's query (currently is copies its _handle) to be
+   able to call column_index() on it. Is this a problem?
+
+ - use sqlite3_db_mutex() to provide extended error information during
+   sqlite_error construction. The general procedure would be to lock the db
+   mutex, perform some sqlite3 command, check the error code, throw an
+   sqlite_error (whilst obtaining extended error info) and then unlock the db
+   mutex. Two options:
+   	- a macro would be simple
+	- a templated safe-calling object (passing the comman's arg types as
+      template params) may be overkill
+
+
+LONGER TERM IDEAS
+
+ - make basic_statement and database keep a shared pointer to the database
+   handle so the classes can be made copyable. The wrappers around the handle
+   (implemented in sqlite::detail) can clean them up after use. This will also
+   make the implementation of rows (to get round the forced non-dependency of
+   rows on querys) a little easier to swallow.
+    - A similar wrapper should be created for statement handles, making
+      basic_statements, querys and commands copyable. Could weak_ptrs to these
+      also be used in the database's list active querys?
+
+ - expand sqlite_error - perhaps use boost::system_error (see
+   boost/asio/error.hpp for an example of extending system_error)
+
+ - see if we can #include "sqlite.h" in to a namespace.
+
+	Pros:
+	 - we better encapsulate the library
+	 - we can reuse "sqlite3" as a namespace
+	Cons:
+	 - makes access to real sqlite stuff awkward to sqlite3cc users, but does
+       this matter? they can't access database._handle anyway!
+     - potential incompatibility when linking to libraries that also link
+       against sqlite

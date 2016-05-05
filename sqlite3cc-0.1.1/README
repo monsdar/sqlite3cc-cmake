@@ -1,0 +1,28 @@
+
+THE SQLITE3CC LIBRARY
+=====================
+
+The sqlite3cc library is a C++ wrapper around the excellent SQLite 3 library.
+The SQLite Library has a C-style interface, and sqlite3cc is intended to make
+the use of SQLite more comfortable in a C++ programming environment.
+
+The goals of sqlite3cc are:
+- to be elegantly designed and written, following principles of good C++
+	design and those laid out by the boost project <http://www.boost.org/>
+- to be fast, adding as small an execution overhead as possible
+- to keep the API similar to the SQLite library
+
+More information about the sqlite3cc library can be found at
+<http://ed.am/dev/sqlite3cc>.
+
+More information on the SQLite library can be found at <http://www.sqlite.org/>.
+
+The sqlite3cc library was inspired by boost <http://www.boost.org/> and the
+excellent sqlite3pp library by Wongoo Lee <http://code.google.com/p/sqlite3pp/>.
+
+
+THE AUTHOR
+==========
+
+Please report bugs and direct suggestions and questions regarding this software
+to Tim Marston <tim@ed.am>.
